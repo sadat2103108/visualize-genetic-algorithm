@@ -4,11 +4,11 @@ import random
 # --- CONFIG ---
 WIDTH, HEIGHT = 800, 400
 GROUND = HEIGHT - 60
-POP_SIZE = 50
+POP_SIZE = 6
 GENE_COUNT = 50  # number of decision points per individual
 FPS = 60
 HORIZONTAL_SPEED = 3
-BONUS = 50
+BONUS = 250
 JUMP_PENALTY = 50
 MUTATION_PROB = 0.05  # probability to introduce a new jump near death
 
@@ -17,10 +17,12 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 # --- ENVIRONMENT ---
+
+
 obstacles = [
-    pygame.Rect(300, GROUND - 40, 40, 40),
-    pygame.Rect(500, GROUND - 60, 40, 60),
-    pygame.Rect(650, GROUND - 50, 40, 50),
+    pygame.Rect(300, GROUND - 30, 50, 30),
+    pygame.Rect(500, GROUND - 70, 30, 70),
+    pygame.Rect(650, GROUND - 60, 20, 60),
 ]
 goal = pygame.Rect(WIDTH - 50, GROUND - 50, 40, 50)
 obstacle_thresholds = [obs.right for obs in obstacles]
