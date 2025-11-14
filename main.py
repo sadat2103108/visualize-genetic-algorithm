@@ -4,17 +4,27 @@ import random
 # --- CONFIG ---
 WIDTH, HEIGHT = 800, 400
 GROUND = HEIGHT - 60
-POP_SIZE = 6
+POP_SIZE = 20
 GENE_COUNT = 50  # number of decision points per individual
 FPS = 60
-HORIZONTAL_SPEED = 3
-BONUS = 250
-JUMP_PENALTY = 50
+BONUS = 20
+JUMP_PENALTY = 10
 MUTATION_PROB = 0.05  # probability to introduce a new jump near death
+
+DESTROY_COLOR = (255,255,255)
+
+
+HORIZONTAL_SPEED = 2
+GRAVITY = 0.35
+JUMP_VELOCITY = 10 
+
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
+
+
+
 
 # --- ENVIRONMENT ---
 
@@ -24,7 +34,7 @@ obstacles = [
     pygame.Rect(500, GROUND - 70, 30, 70),
     pygame.Rect(650, GROUND - 60, 20, 60),
 ]
-goal = pygame.Rect(WIDTH - 50, GROUND - 50, 40, 50)
+goal = pygame.Rect(WIDTH - 5, GROUND - 200, 5, 200)
 obstacle_thresholds = [obs.right for obs in obstacles]
 
 # --- BOX CLASS ---
@@ -45,9 +55,15 @@ class Box:
                 key=lambda g: g[0]
             )
         self.fitness = 0
-
+        self.color = (random.randint(50,255), random.randint(50,255), random.randint(50,255))
+        self.start_delay = random.randint(0, 100)
+        
     def update(self):
         if self.dead:
+            return
+        
+        if self.start_delay > 0:
+            self.start_delay -= 1
             return
 
         self.x += HORIZONTAL_SPEED
@@ -56,12 +72,12 @@ class Box:
         while self.gene_index < len(self.genes) and self.x >= self.genes[self.gene_index][0]:
             action = self.genes[self.gene_index][1]
             if action == "j" and self.on_ground:
-                self.vel_y = -10
+                self.vel_y = -JUMP_VELOCITY
                 self.on_ground = False
             self.gene_index += 1
 
         # gravity
-        self.vel_y += 0.5
+        self.vel_y += GRAVITY
         self.y += self.vel_y
         if self.y >= GROUND:
             self.y = GROUND
@@ -101,7 +117,8 @@ class Box:
         self.fitness -= num_jumps * JUMP_PENALTY
 
     def draw(self):
-        color = (0,0,200) if not self.dead else (200,200,0)
+        # color = (0,0,200) if not self.dead else (200,200,0)
+        color = self.color if not self.dead else DESTROY_COLOR
         pygame.draw.rect(screen,color,(self.x,self.y-20,20,20))
         pygame.draw.rect(screen,(0,0,0),(self.x,self.y-20,20,20),2)
 
