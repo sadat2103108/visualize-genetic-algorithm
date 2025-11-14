@@ -51,15 +51,12 @@ pip install pygame
 2. Run the script:
 
 ```bash
-python your_script_name.py
+python main.py
 ```
 
 3. Watch boxes attempt to navigate obstacles in real-time.
    Console output shows the best fitness per generation.
 
-## Controls
-
-* Close the window to stop the simulation.
 
 ## Notes
 
